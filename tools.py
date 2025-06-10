@@ -108,6 +108,33 @@ class Chatbotds:
     def word_to_tensor(self,sentences,word2id):
         return torch.tensor([[word2id.get(word) if word in word2id.keys() else word2id.get("UNK") for word in sentence] for sentence in sentences])
 
+    def tensor_to_word(self,tensor,id2word):
+        return [[id2word.get(id.item()) for id in sentence] for sentence in tensor]
+
+
+class ChatDataset(data.Dataset):
+    def __init__(self,people,robot):
+        super().__init__()
+        self.people=people
+        self.robot=robot
+
+    def __len__(self):
+        if len(self.people)!=len(self.robot):
+            raise ValueError("sample and target need just as long")
+        return len(self.people)
+
+    def __getitem__(self,item):
+        sample_people=self.people[item]
+        sample_robot=self.robot[item]
+        return sample_people,sample_robot
+
+def getDataLoader(dataset,shuffle=True,batch_size=10):
+    if shuffle:
+        return data.DataLoader(dataset=dataset,batch_size=batch_size,shuffle=True)
+    else:
+        return data.DataLoader(dataset=dataset,batch_size=batch_size,shuffle=False)
+
+
 if __name__=="__main__":
     chatbots=Chatbotds(dataPath="./data/conversations.corpus.json",max_length=6,set_max_length=True)
     contents=chatbots.load_data()
@@ -115,5 +142,14 @@ if __name__=="__main__":
     people_sentences=chatbots.revise_sentence_list(chatbots.split_chat(contents,people=True),keep=True)
     robot_sentences=chatbots.revise_sentence_list(chatbots.split_chat(contents,people=False),keep=True)
     words=chatbots.revise_sentence_list(sentence_list,keep=False)
-    word2id=chatbots.word_to_id(words)
-    id2word=chatbots.id_to_word(word2id)
+    w2i=chatbots.word_to_id(words)
+    i2w=chatbots.id_to_word(w2i)
+    print(i2w)
+    people=chatbots.word_to_tensor(people_sentences,w2i)
+    robot=chatbots.word_to_tensor(robot_sentences,w2i)
+    chatdataset=ChatDataset(people,robot)
+    chatdataloader=getDataLoader(dataset=chatdataset,shuffle=True,batch_size=10)
+    for item in chatdataloader:
+        print(chatbots.tensor_to_word(item[0],i2w))
+        print(chatbots.tensor_to_word(item[1],i2w))
+        break
