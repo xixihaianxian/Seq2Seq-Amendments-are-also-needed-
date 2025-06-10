@@ -150,6 +150,7 @@ if __name__=="__main__":
     chatdataset=ChatDataset(people,robot)
     chatdataloader=getDataLoader(dataset=chatdataset,shuffle=True,batch_size=10)
     for item in chatdataloader:
+        print(item[0].shape)
         print(chatbots.tensor_to_word(item[0],i2w))
         print(chatbots.tensor_to_word(item[1],i2w))
         break

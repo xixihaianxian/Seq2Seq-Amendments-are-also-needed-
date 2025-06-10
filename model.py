@@ -17,10 +17,11 @@ class Encoder(nn.Module):
         self.dropout=nn.Dropout(p=dropout_rate)
         self.linear=nn.Linear(in_features=self.hidden_size*(2 if self.bidirectional else hidden_size),out_features=len(words))
 
-    def forward(self,input,hidden,cell):
+    def forward(self,input:torch.Tensor):
         input=self.dropout(self.embedding(input))
-        output,(hidden,cell)=self.lstm(input,hidden,cell)
-        output=nn.utils.rnn.pad_packed_sequence(sequence=output,batch_first=True)
+        # input=nn.utils.rnn.pack_padded_sequence(input,input_length,batch_first=True)
+        output,(hidden,cell)=self.lstm(input)
+        # output=nn.utils.rnn.pad_packed_sequence(sequence=output,batch_first=True)
         return output,hidden,cell
         #TODO output(batch_size,sequence_length,hidden_size*2) hidden(batch_size,hidden_layer*2,hidden_size) cell和hidden相同
 
@@ -45,7 +46,16 @@ class Decorder(nn.Module):
         input=self.dropout(self.embedding(input))
         output,(hidden,cell)=self.lstm(input,hidden,cell)
         output=self.linear(output)
-        return output
+        return output,hidden,cell
+
+class Seq2Seq(nn.Module):
+    def __init__(self,encoder,decoder):
+        super().__init__()
+        self.encoder=encoder
+        self.decoder=decoder
+
+    def forward(self,people,robot):
+        encoder_output,encoder_hidden,encoder_cell=self.encoder(people)
 
 class Seq2seq(nn.Module):
     pass
