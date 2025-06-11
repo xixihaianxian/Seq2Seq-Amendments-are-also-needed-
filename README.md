@@ -50,9 +50,9 @@
 
 ## 后续计划
 
-- 实现注意力机制
-- 完善训练循环
-- 添加模型评估指标
+- <input type="checkbox" checked="checked"> 实现注意力机制
+- <input type="checkbox"> 完善训练循环
+- <input type="checkbox"> 添加模型评估指标
 
 ## 依赖项
 

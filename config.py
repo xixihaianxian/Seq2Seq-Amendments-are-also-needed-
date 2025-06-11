@@ -9,4 +9,4 @@ chinese_punctuations = [
 
 data=r"./data"
 
-epochs=20
+epochs=30

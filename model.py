@@ -44,7 +44,7 @@ class Decorder(nn.Module):
 
     def forward(self,input,hidden,cell):
         input=self.dropout(self.embedding(input))
-        output,(hidden,cell)=self.lstm(input,hidden,cell)
+        output,(hidden,cell)=self.lstm(input,(hidden,cell))
         output=self.linear(output)
         return output,hidden,cell
 

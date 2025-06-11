@@ -8,6 +8,7 @@ import string
 import config
 from collections import defaultdict
 from torch import optim
+import matplotlib.pyplot as plt
 
 class Chatbotds:
     def __init__(self,dataPath,max_length,set_max_length=True):
@@ -149,6 +150,13 @@ def loss_function():
 
 def cuda_or_cpu():
     return "cuda" if torch.cuda.is_available() else "cpu"
+
+def draw_loss(epochs,loss_all):
+    plt.figure()
+    plt.plot(range(1,epochs+1),loss_all)
+    plt.xlabel("epoch")
+    plt.ylabel("loss")
+    plt.show()
 
 if __name__=="__main__":
     chatbots=Chatbotds(dataPath="./data/conversations.corpus.json",max_length=6,set_max_length=True)
