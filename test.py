@@ -22,7 +22,7 @@ seq2seq.load_state_dict(state_dict=params)
 
 seq2seq.eval()
 
-issue="早上好，你好吗？"
+issue="你好"
 
 issue=chatbots.cutWord(issue)
 issue=[chatbots.cleanSentence(issue)]
@@ -30,5 +30,5 @@ issue=chatbots.revise_sentence_list(issue)[0]
 issue=torch.tensor([[word2id.get(word) for word in issue]],dtype=torch.long)
 dummy_target=torch.randint_like(issue,high=len(words)-1)
 robot_prodict=seq2seq(issue,dummy_target)
-for id in torch.argmax(robot_prodict,dim=1).squeeze().tolist():
+for id in torch.argmax(robot_prodict,dim=-1).squeeze().tolist():
     print(id2word.get(id))
