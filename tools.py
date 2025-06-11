@@ -7,6 +7,7 @@ import jieba
 import string
 import config
 from collections import defaultdict
+from torch import optim
 
 class Chatbotds:
     def __init__(self,dataPath,max_length,set_max_length=True):
@@ -134,6 +135,20 @@ def getDataLoader(dataset,shuffle=True,batch_size=10):
     else:
         return data.DataLoader(dataset=dataset,batch_size=batch_size,shuffle=False)
 
+
+def get_optimizer(model:nn.Module,lr=0.001):
+    return optim.Adam(params=model.parameters(),lr=lr)
+
+# optim.Optimizer(params=[
+#     {"params":'...',"lr":'...'},
+#     {"params":'...',"lr":',,,'},
+# ])
+
+def loss_function():
+    return nn.CrossEntropyLoss()
+
+def cuda_or_cpu():
+    return "cuda" if torch.cuda.is_available() else "cpu"
 
 if __name__=="__main__":
     chatbots=Chatbotds(dataPath="./data/conversations.corpus.json",max_length=6,set_max_length=True)

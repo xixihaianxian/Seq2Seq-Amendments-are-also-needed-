@@ -27,7 +27,7 @@ class Encoder(nn.Module):
 
 class Decorder(nn.Module):
 
-    def __init__(self,words,embedding_dim,padding_idx=0,input_size=100,hidden_size=256,num_layer=2,bidirectional=True,dropout_rate=0.2):
+    def __init__(self,words,embedding_dim=100,padding_idx=0,input_size=100,hidden_size=256,num_layer=2,bidirectional=True,dropout_rate=0.2):
         super().__init__()
         self.words=words
         self.embedding_dim=embedding_dim
@@ -56,6 +56,6 @@ class Seq2Seq(nn.Module):
 
     def forward(self,people,robot):
         encoder_output,encoder_hidden,encoder_cell=self.encoder(people)
-
-class Seq2seq(nn.Module):
-    pass
+        robot=robot[:,:-1]
+        decoder_output,decoder_hidden,decoder_cell=self.decoder(robot,encoder_hidden,encoder_cell)
+        return decoder_output
